@@ -1,1 +1,1 @@
-# Shadow-Labyrinth
+# ShadowLabyrinth
