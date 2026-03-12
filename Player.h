@@ -1,14 +1,16 @@
 #pragma once
 
-class Player {
+class Player
+{
 public:
-	Player(int x, int y);
-	void Update(int map[][20]);
+
+	void Update();
 	void Draw();
 
-	int GetX() const;
-	int GetY() const;
-
 private:
-	int x, y;
+
+	int x = 64;
+	int y = 64;
+
+	int speed = 4;
 };

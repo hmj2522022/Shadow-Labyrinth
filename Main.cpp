@@ -1,20 +1,43 @@
 #include "DxLib.h"
-#include "SceneManager.h"
+#include "Map.h"
+#include "Light.h"
+#include "Title.h"
+#include "Player.h"
 
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine, _In_ int nCmdShow)
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
+	const int WIDTH = 960, HEIGHT = 704;
+
+	SetGraphMode(WIDTH, HEIGHT, 32);
 	ChangeWindowMode(TRUE);
-	DxLib_Init();
+
+	if (DxLib_Init() == -1) return -1;
+
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	SceneManager scene;
+	Map map;
+	Light light;
+	Title title;
+	Player player;
 
-	while (ProcessMessage() == 0 && ClearDrawScreen() == 0 && ScreenFlip() == 0) {
-		scene.Update();
-		scene.Draw();
+	while (ProcessMessage() == 0)
+	{
+		ClearDrawScreen();
+
+		map.Draw();
+
+		light.Update();
+		light.Draw();
+
+		player.Update();
+		player.Draw();
+
+		title.Draw();
+
+		ScreenFlip();
 	}
 
 	DxLib_End();
+
 	return 0;
 }
