@@ -1,35 +1,76 @@
 #include "Light.h"
 #include "DxLib.h"
+#include <cstdlib>
 
-void Light::Update()
+void Light::SetPosition(int px, int py)
 {
-	timer++;
+	x = px;
+	y = py;
+}
 
-	if (timer > 120)
+void Light::Update(Map& map, int px, int py)
+{
+	int dx = px - x;
+	int dy = py - y;
+
+	int dist = dx * dx + dy * dy;
+
+	// ”ÍˆÍ“à‚¾‚¯’Ç”ö
+	if (dist < searchRange * searchRange)
 	{
-		direction++;
-		timer = 0;
+		int mapX = x / 64;
+		int mapY = y / 64;
 
-		if (direction > 3)
+		int playerMapX = px / 64;
+		int playerMapY = py / 64;
+
+		int bestX = mapX;
+		int bestY = mapY;
+
+		int minDist = 99999;
+
+		int dirX[4] = { 1, -1, 0, 0 };
+		int dirY[4] = { 0, 0, 1, -1 };
+
+		for (int i = 0; i < 4; i++)
 		{
-			direction = 0;
+			int nx = mapX + dirX[i];
+			int ny = mapY + dirY[i];
+
+			if (map.GetMap(nx, ny) == 0)
+			{
+				int d = abs(playerMapX - nx) + abs(playerMapY - ny);
+
+				if (d < minDist)
+				{
+					minDist = d;
+					bestX = nx;
+					bestY = ny;
+				}
+			}
 		}
+
+		int targetX = bestX * 64 + 32;
+		int targetY = bestY * 64 + 32;
+
+		if (x < targetX) x += speed;
+		if (x > targetX) x -= speed;
+		if (y < targetY) y += speed;
+		if (y > targetY) y -= speed;
 	}
 }
 
 void Light::Draw()
 {
-	DrawCircle(enemyX, enemyY, 10, GetColor(255, 0, 0), TRUE);
+	DrawCircle(x, y, hitRange, GetColor(255, 255, 0), FALSE);
 
-	if (direction == 0)
-		DrawLine(enemyX, enemyY, enemyX + 200, enemyY, GetColor(255, 255, 0));
+	DrawCircle(x, y, 5, GetColor(255, 0, 0), TRUE);
+}
 
-	if (direction == 1)
-		DrawLine(enemyX, enemyY, enemyX, enemyY + 200, GetColor(255, 255, 0));
+bool Light::CheckHit(int px, int py)
+{
+	int dx = px - x;
+	int dy = py - y;
 
-	if (direction == 2)
-		DrawLine(enemyX, enemyY, enemyX - 200, enemyY, GetColor(255, 255, 0));
-
-	if (direction == 3)
-		DrawLine(enemyX, enemyY, enemyX, enemyY - 200, GetColor(255, 255, 0));
+	return (dx * dx + dy * dy) < (hitRange * hitRange);
 }

@@ -1,16 +1,18 @@
 #pragma once
+#include "Map.h"
 
 class Player
 {
 public:
-
-	void Update();
+	void Update(Map& map);
 	void Draw();
 
-private:
+	int GetX();
+	int GetY();
 
-	int x = 64;
-	int y = 64;
+private:
+	int x = 80;
+	int y = 80;
 
 	int speed = 4;
 };
